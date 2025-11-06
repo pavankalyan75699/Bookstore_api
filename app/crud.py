@@ -28,3 +28,23 @@ def delete_book(db: Session, book_id: int):
         db.delete(book)
         db.commit()
     return book
+def search_books(
+    db:Session,
+    title:str=None,
+    author:str=None,
+    genre:str=None,
+    min_price:float=None,
+    max_price:float=None      
+):
+    db.query(Book)
+    if title:
+        query=query.filter(Book.title.ilike(f"%{title}%"))
+    if author:
+        query=query.filter(Book.author.ilike(f"%{author}%"))
+    if genre:
+        query=query.filter(Book.genre.ilike(f"%{genre}%"))
+    if min_price is not None:
+        query=query.filter(Book.price >= min_price)
+    if max_price is not None:
+        query = query.filter(Book.price <= max_price)
+    return query.all()
