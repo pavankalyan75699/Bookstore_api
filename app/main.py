@@ -47,3 +47,16 @@ def delete_book(book_id: int, db: Session = Depends(get_db)):
     if not deleted:
         raise HTTPException(status_code=404, detail="Book not found")
     return {"message": f"Book {book_id} deleted successfully"}
+from fastapi import Query
+from typing import Optional
+
+@app.get("/books/search", response_model=list[schemas.Book])
+def search_books(
+    title: Optional[str] = Query(None),
+    author: Optional[str] = Query(None),
+    genre: Optional[str] = Query(None),
+    min_price: Optional[float] = Query(None),
+    max_price: Optional[float] = Query(None),
+    db: Session = Depends(get_db)
+):
+    return crud.search_books(db, title, author, genre, min_price, max_price)
